@@ -1,0 +1,180 @@
+# Creating annotation similar to one used in Wang et al, YTHDF2 CLIP paper
+ls intersect -a 5UTR_exon_unique_hg19_GK4.gff -b HQ_mRNA_unique_hg19_GK4.gff |awk '!cnt[$1,$4,$5]++' > 5UTR_exon_final_hg19_GK4.gff
+
+
+grep 5UTR_exon /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff > Wang_et_al_annotation.gff
+grep 3UTR_exon /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff >> Wang_et_al_annotation.gff
+grep CDS_exon /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff >> Wang_et_al_annotation.gff
+awk '$3=="intron"'  /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff >> Wang_et_al_annotation.gff
+awk 'BEGIN{FS=OFS="\t"} $3=="CDS"{$4=$5-200; $5=$5+200;$2="iGenomes";$3="stop_codon_window"; print $0}' /homes2/gkudla/seqs/bowtie_iGenomes/Homo_sapiens/UCSC/hg19/Annotation/Genes/genes.gtf >> annotation/Wang_et_al_annotation.gff
+awk 'BEGIN{FS=OFS="\t"} $3=="ML_12000_mRNA" || $3=="HQ_mRNA"{$3="TSS_window"; $5=$4+100;$4=$4-100;print $0}' /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff >> Wang_et_al_annotation.gff
+
+
+# Exonic Alus
+bedtools intersect -a ~/annotation/GK4_Alu.gff -b ~/annotation/bowtie_iGenomes/genes.gtf -u > ~/annotation/exonic_Alu.gtf &
+
+
+# Tried it second time - this time I used GK4 annotations for HQ mRNA and intersected all the UTR,CDS....annotation with just the mRNA. I filtered all annotations for unique only and greped NM_ to filter just for mRNAs.
+
+grep 5UTR_exon /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff > 5UTR_exon_hg19_GK4.gff
+awk '!cnt[$1,$4,$5]++' 5UTR_exon_hg19_GK4.gff > 5UTR_exon_unique_hg19_GK4.gff
+
+
+grep 3UTR_exon /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff > 3UTR_exon_hg19_GK4.gff
+awk '!cnt[$1,$4,$5]++' 3UTR_exon_hg19_GK4.gff > 3UTR_exon_unique_hg19_GK4.gff
+
+
+grep CDS_exon /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff > CDS_exon_hg19_GK4.gff
+awk '!cnt[$1,$4,$5]++' CDS_exon_hg19_GK4.gff > CDS_exon_unique_hg19_GK4.gff
+
+awk '$3=="intron"'  /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff > intron_hg19_GK4.gff
+awk '!cnt[$1,$4,$5]++' intron_hg19_GK4.gff  > intron_unique_hg19_GK4.gff
+
+
+awk 'BEGIN{FS=OFS="\t"} $3=="HQ_mRNA"' /homes2/gkudla/seqs/gff_files/hg19_GK4/hg19_GK4.gff > HQ_mRNA_hg19_GK4.gff
+awk '!cnt[$1,$4,$5]++' HQ_mRNA_hg19_GK4.gff  > HQ_mRNA_unique_hg19_GK4.gff
+
+grep stop_codon /homes2/gkudla/seqs/bowtie_iGenomes/Homo_sapiens/UCSC/hg19/Annotation/Genes/genes.gtf | awk '!fnd[$1,$4,$5]++' > stop_codon_unique_iGenomes.gff
+
+
+awk 'BEGIN{FS=OFS="\t"} $3=="CDS"{$4=$5-200; $5=$5+200;$2="iGenomes";$3="stop_codon_window"; print $0}' /homes2/gkudla/seqs/bowtie_iGenomes/Homo_sapiens/UCSC/hg19/Annotation/Genes/genes.gtf | awk '!cnt[$1,$4]++' > stop_codon_unique_iGenomes.gff
+
+grep NR_ 5UTR_exon_unique_hg19_GK4.gff > ncRNA_exons.gff
+grep NR_ 3UTR_exon_unique_hg19_GK4.gff >> ncRNA_exons.gff
+awk 'BEGIN{FS=OFS="\t"} {$3="ncRNA_exon"; print $0}' ncRNA_exons.gff | awk '!fnd[$1,$4,$5]++' > ncRNA_exons_final.gff
+
+
+awk 'BEGIN{FS=OFS="\t"} {$3="TSS_window"; $4=$4-100;$5=$4+100;print $0}' HQ_mRNA_unique_hg19_GK4.gff > TSS_window_final.gff
+
+
+bedtools intersect -a intron_unique_hg19_GK4.gff -b HQ_mRNA_unique_hg19_GK4.gff | awk '!cnt[$1,$4,$5]++'|grep NM_ > introns_final_hg19_GK4.gff
+bedtools intersect -a 5UTR_exon_unique_hg19_GK4.gff -b HQ_mRNA_unique_hg19_GK4.gff |awk '!cnt[$1,$4,$5]++'|grep NM_ > 5UTR_exon_final_hg19_GK4.gff
+bedtools intersect -a CDS_exon_hg19_GK4.gff -b HQ_mRNA_unique_hg19_GK4.gff |awk '!cnt[$1,$4,$5]++'|grep NM_ > CDS_exon_final_hg19_GK4.gff
+bedtools intersect -a 3UTR_exon_hg19_GK4.gff -b HQ_mRNA_unique_hg19_GK4.gff |awk '!cnt[$1,$4,$5]++'|grep NM_ > 3UTR_exon_final_hg19_GK4.gff
+bedtools intersect -a stop_codon_unique_iGenomes.gff -b HQ_mRNA_unique_hg19_GK4.gff | awk '!cnt[$1,$4,$5]++'|grep NM_ > stop_codon_final_iGenomes.gff
+bedtools intersect -a stop_codon_unique_iGenomes.gff -b HQ_mRNA_unique_hg19_GK4.gff | awk '!cnt[$1,$4,$5]++' > stop_codon_final_iGenomes.gff
+bedtools intersect -a stop_codon_unique_iGenomes.gff -b HQ_mRNA_unique_hg19_GK4.gff | awk '!fnd[$1,$4,$5]++'|awk 'BEGIN{FS=OFS="\t"} {$4=$5-200;$5=$5+200;$3="stop_codon_window";print $0}' > stop_codon_final.gff
+
+cat *final* > wang_et_al.gff
+awk 'BEGIN{FS=OFS="\t"} {$9="MarekNR="NR";"$9; print $0}' > wang_et_al_final.gff
+
+# Wang+GK4 - merge those two for piechart pipeline....top priority is then repeat,rRNA,tRNA and abundant stuff, and then instead of mRNA there are stop_codon/3UTR/5UTR.....
+
+cat hg19_GK4.gff wang_et_al_final.gff > hg19_GK4_wang_final.gff
+
+# And adding 7SK annotation
+
+awk 'BEGIN{FS=OFS="\t"} /7SK/{$3="7SK";print $0}' hg19_GK4_wang_final.gff > 7SK.gff
+cat 7SK.gff >> hg19_GK4_wang_final.gff
+
+# And Alu elements annotation
+
+grep Alu hg19_GK4_wang_final.gff |awk 'BEGIN{FS=OFS="\t"}$3="Alu"' > GK4_Alu.gff
+cat GK4_Alu.gff >> hg19_GK4_wang_final.gff
+
+# Merging CDS,5UTR and 3UTR annot and making pseudosgrs with percentage in transcript(in 5UTR,3UTR,CDS)
+
+sort -k1,1 -k4,4n CDS_exon_final_hg19_GK4.gff |awk 'BEGIN{FS=OFS="\t"} {$3=$9;print}'| mergeBed -s -nms -i stdin|bed2gff.awk > CDS_exon_final_hg19_GK4_merged.gff
+sort -k1,1 -k4,4n 5UTR_exon_final_hg19_GK4.gff |awk 'BEGIN{FS=OFS="\t"} {$3=$9;print}'| mergeBed -s -nms -i stdin|bed2gff.awk > 5UTR_exon_final_hg19_GK4_merged.gff &
+sort -k1,1 -k4,4n 3UTR_exon_final_hg19_GK4.gff |awk 'BEGIN{FS=OFS="\t"} {$3=$9;print}'| mergeBed -s -nms -i stdin|bed2gff.awk > 3UTR_exon_final_hg19_GK4_merged.gff &
+
+ls *_exon_final_hg19_GK4_merged.gff | while read line; do test1.py $line > ${line/.gff/_pseudosgrs.bed} & done
+
+
+# Filtering hg19_GK$ to get ENSEMBL_protein_coding transcripts
+
+grep 'ENS_protein_coding' hg19_GK4.gff
+
+# Making list of transcripts that overalp with Alus
+
+bedtools intersect -a GK4_Alu.gff -b ~/annotation/ENS_protein_coding.gff -loj |awk 'BEGIN{OFS="\t"} $12 == "ENS_protein_coding"{split($18,a,";"); print a[2]}'|sed 's/ENST=//g' > GK4_Alu.ENST_transcripts &
+
+# Making 3UTR .gff file with ENSGs annotation - for microarray
+
+bedtools intersect -a 3UTR_exon_hg19_GK4.gff -b Homo_sapiens.GRCh37.74.gff -wa -wb | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6,$7,$8,$9$19}' | awk 'BEGIN{OFS="\t"}{split($9,a,";")}!b[$1$4$5a[4]]++{print}' > 3UTR_exon_GK4_ENSGs.gff
+bedtools intersect -a introns_final_hg19_GK4.gff -b Homo_sapiens.GRCh37.74.gff -wa -wb | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6,$7,$8,$9$19}' | awk 'BEGIN{OFS="\t"}{split($9,a,";")}!b[$1$4$5a[4]]++{print}' > introns_GK4_ENSGs.gff
+bedtools intersect -a 3UTR_exons_with_Alu_final.gff -b Homo_sapiens.GRCh37.74.gff -wa -wb | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6,$7,$8,$9$19}' | awk 'BEGIN{OFS="\t"}{split($9,a,";")}!b[$1$4$5a[4]]++{print}' > 3UTR_exons_with_Alu_final_ENSGs.gff
+
+# Downloading newest GRCh37 annotation from ensembl
+
+wget ftp://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz
+
+###################################################################
+# Making annotation for ADAR sites: source : http://darned.ucc.ie #
+###################################################################
+
+wget "http://darned.ucc.ie/static/downloads/hg19.txt"
+awk 'BEGIN{OFS="\t"} {print "chr"$1,$2,$2+1,$6";"$4">"$5";"$7";"$8";"$9,".",$3}' hg19.txt > ~/annotation/ADAR_sites.bed
+
+
+# Checking what base is at the position of ADAR modifications site
+echo "#########http://darned.ucc.ie#########" > ADAR.log; bedtools getfasta -s -fi ~gkudla/seqs/bowtie_iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa -bed ADAR_sites.gff -fo stdout | awk '!/>/' | sort |uniq -c 2>/dev/null >> ADAR.log &
+
+  75817 a
+   2342 A
+  85944 c
+   1509 C
+  84947 g
+   2076 G
+  78412 t
+   2167 T
+
+####################################
+# Second source of ADAR annotation #
+####################################
+
+wget "http://www.stanford.edu/~gokulr/database/Human_AG_all_hg19.txt"
+awk 'BEGIN{OFS="\t"}NR!=1 {print $1,FILENAME,"ADAR-site",$2,$2,$3";"$5";"$6,$4,"NR="NR}' Human_AG_all_hg19.txt > ADAR_sites2.gff
+
+echo "###########www.stanford.edu###############" >> ADAR.log ; bedtools getfasta -s -fi ~gkudla/seqs/bowtie_iGenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa -bed ADAR_sites2.gff -fo stdout | awk '!/>/' | sort |uniq -c 2>/dev/null >> ADAR.log
+
+1357964 a
+  21439 A
+
+# Get chromosome sizes for hg19
+
+fetchChromSizes hg19 | awk '{print $1"\t"$2}' > ~/annotation/chromSizes_hg19.txt
+
+# Alus in exons only
+
+bedtools intersect -u -a GK4_Alu.gff -b exons_unique_hg19_GK4.gff > GK4_Alu_exons.gff
+
+# Alus in IR
+bedtools closest -io -S -a ~/annotation/GK4_Alu_exons.gff -b ~/annotation/GK4_Alu_exons.gff -d | awk 'BEGIN{OFS="\t"} $19 < 500{print $1,$2,$3,$4,$5,$6,$7,$8,$9}' > GK4_Alu_exons_IR_Alus.gff
+
+
+# Last alternative exons
+
+./last_alternative_exon_search.py | awk '{for(i=1;i<=9;i++){printf $i"\t"};printf "\n"}' > last_exons_Ensembl_GRCh37.75.gtf 
+
+# miRNA database
+
+wget ftp://mirbase.org/pub/mirbase/CURRENT/genomes/hsa.gff3 
+
+mv hsa.gff3 mirBASE_miRNA.gff
+
+########################
+# New repeat masker db #
+########################
+
+# Repeat masker full downloaded from https://genome.ucsc.edu/cgi-bin/hgTables rmsk, all fields from selected table
+
+awk 'BEGIN{FS=OFS="\t"} !/#/{ print $6,"repeatMasker",$12,$7,$8,$2,$10,".","gene_id "$11"; transcript_id "$11  "; rep_family "$13";"}' repeatMaskerFull.txt > repeatMasker.gtf
+
+# Extract introns from Ensembl
+
+cat Ensembl_GRCh37.75.gtf | python extract_introns_ensembl.py > Ensembl_GRCh37.75_introns.gtf &
+(cat Ensembl_GRCh37.75.gtf > Ensembl_GRCh37.75_with_introns.gtf ; 
+ awk 'BEGIN{FS=OFS="\t"} !/^#/{$3="exon";n=split($9,a," "); gsub("\"","",a[2]);gsub(";","",a[2]); a[2] = a[2]"_intron"; a[2]="\""a[2]"\";";$9=""; for (i=1;i<=n;i++) {$9=$9" "a[i]};print} /^#/{print}' Ensembl_GRCh37.75_introns.gtf ) |  >> Ensembl_GRCh37.75_with_introns.gtf 
+
+# Junctions
+awk 'BEGIN{FS=OFS="\t"} /^#/ {print} !/^#/ && $2=="protein_coding" && $3=="intron" {start = $4; end = $5; $4=start-3; $5=start + 2; print $0; $4 = end - 2; $5 = end + 3; print $0}' Ensembl_GRCh37.75_introns.gtf > Ensembl_GRCh37.75_junctions.gtf 
+
+# RMBAseq annotation of m6A sites 
+wget http://mirlab.sysu.edu.cn/rmbase/download/human/zip/RMBase_hg19_all_m6A_site.txt.gz
+gunzip RMBase_hg19_all_m6A_site.txt.gz 
+
+# polyA sites annotation from Mihaela Zavolan
+wget http://www.polyasite.unibas.ch/clusters/Homo_sapiens/8.0/clusters.bed
+mv clusters.bed polyA_sites_Zavolan.bed
+

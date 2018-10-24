@@ -1,0 +1,4 @@
+- in QC - STAR_gc reports statistics based on unique reads = if a read was multimapped it was counted only ONCE as multimapped (=reads)
+	    - featureCounts_gc reports statistics based on mappings = if a read was multimapped it was counted as many times as it was mapped (=assignments)
+
+		- this makes a differences in QC because it might seem featureCounts estimates much lower number of uniquely mapped reads but it works with assignemnts (=mappings) and not reads

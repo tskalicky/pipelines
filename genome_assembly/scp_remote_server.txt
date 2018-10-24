@@ -1,0 +1,17 @@
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18098_1_6_1_trimmed_Paired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18098_1_6_2_Paired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18098_1_6_1_trimmed_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18098_1_6_2_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18098_1_6_both_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18021_1_6_1_trimmed_Paired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18021_1_6_2_Paired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18021_1_6_1_trimmed_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18021_1_6_2_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/18021_1_6_both_Unpaired.fq /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/Mbr04_Wallacemonas_both_6_1_trimmed_Paired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/Mbr04_Wallacemonas_both_6_2_trimmed_Paired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/Mbr04_Wallacemonas_both_6_1_trimmed_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/Mbr04_Wallacemonas_both_6_2_trimmed_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Trimming/Mbr04_Wallacemonas_both_6_both_trimmed_Unpaired.fq.gz /home/users/tskalicky/Hinxton/trimming
+get /media/4TB3/Tomas_data/Hinxton/Assembly/PacBio/HGAP/Mbr04_Wallacemonas/Mbr04_filtered_longreads.fasta /home/users/tskalicky/Hinxton/PacBio
+get /media/4TB3/Tomas_data/Hinxton/Assembly/PacBio/HGAP/Mbr04_Wallacemonas/HGAP_25/polished_assembly.fasta /home/users/tskalicky/Hinxton/PacBio

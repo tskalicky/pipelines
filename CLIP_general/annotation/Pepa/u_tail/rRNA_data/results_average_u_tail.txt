@@ -1,0 +1,2 @@
+# Average (uadd) U-tail length in:
+rRNA: 9.80

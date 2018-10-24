@@ -1,0 +1,9 @@
+# Average (uadd) U-tail length in:
+lincRNA: 8.61
+5S rRNA: 12.64
+mRNA: 7.79
+miRNA: 9.08
+tRNA: 8.99
+miscRNA: 11.33
+snRNA: 8.83
+rRNA: 9.80
