@@ -1,0 +1,3 @@
+[submodule "RNA-Seq_Opplatek"]
+	path = RNA-Seq_Opplatek
+	url = https://bitbucket.org/opplatek/pipelines/RNA-Seq_general
